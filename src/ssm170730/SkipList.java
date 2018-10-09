@@ -87,12 +87,8 @@ public class SkipList<T extends Comparable<? super T>> {
             return false;
         }
     }
-
-
     // Add x to list. If x already exists, reject it. Returns true if new node is added to list
     public boolean add(T x) {
-
-
         if (size == 0) {
             int level = maxLevel;
             Entry<T> ent = new Entry<T>(x, level);
@@ -113,20 +109,26 @@ public class SkipList<T extends Comparable<? super T>> {
             return false;
         }
 
-            int level = chooseLevel();
-            Entry<T> ent = new Entry<T>(x, level);
+
+        int level = chooseLevel();
+        Entry<T> ent = new Entry<T>(x, level);
 
         for (int i = 0; i < level; i++) {
+            if (last[i].next[i] != null) {
                 ent.next[i] = last[i].next[i];
                 last[i].next[i] = ent;
+                ent.next[i].prev = ent;
+                ent.prev = last[i];
+            } else {
+                ent.next[i] = tail;
+                last[i].next[i] = ent;
+                ent.prev = last[i];
+                tail.prev = ent;
             }
-            ent.next[0].prev = ent;
-            ent.prev = last[0];
-            size++;
-
-            System.out.println("Added " + ent.element);
-            return true;
-
+        }
+        size++;
+        System.out.println("Added " + ent.element);
+        return true;
 
     }
 
