@@ -45,6 +45,11 @@ public class SkipList<T extends Comparable<? super T>> {
         maxLevel = 1;
         last = new Entry[33];
         random = new Random();
+
+        for (int i = 0; i < maxLevel - 1; i++) {
+            head.next[i] = tail;
+        }
+        tail.prev = head;
     }
 
 
@@ -55,52 +60,63 @@ public class SkipList<T extends Comparable<? super T>> {
         for (int i = maxLevel-1; i >= 0; i--)
         {
             //check NPE for tail
-            /*if(head.next[i] == null)
+            while (p.next[i].element != null && (x.compareTo((T) (p.next[i].element)) > 0))
             {
-                last[i] = head;
-            }
-            else
-            {*/
-
-            while (p.next[i] != tail && (x.compareTo((T) (p.next[i].element)) > 0)) {
+                System.out.println("Inside");
                 p = p.next[i];
             }
-            System.out.println(p.next[i].element);
+            //System.out.println("In Find p.next element "+p.next[i].element);
+            System.out.println("In Find p.element " + p.element);
             last[i] = p;
-
-            //}
         }
     }
+
+
+    // Does list contain x?
+    public boolean contains(T x) {
+
+
+        if (size == 0) {
+            return false;
+        }
+
+        find(x);
+        if (last[0].next[0].element != null) {
+            return x.compareTo((T) (last[0].next[0].element)) == 0;
+        } else {
+            return false;
+        }
+    }
+
 
     // Add x to list. If x already exists, reject it. Returns true if new node is added to list
     public boolean add(T x) {
 
 
         if (size == 0) {
-            int level = head.next.length;
+            int level = maxLevel;
             Entry<T> ent = new Entry<T>(x, level);
 
-            for (int i = 0; i < level - 1; i++) {
+            for (int i = 0; i < level; i++) {
                 head.next[i] = ent;
                 ent.next[i] = tail;
             }
             ent.prev = head;
             tail.prev = ent;
             size++;
-
             System.out.println("Added " + ent.element);
             return true;
         }
 
-
         if(contains(x))
         {
             return false;
-        } else {
+        }
+
             int level = chooseLevel();
             Entry<T> ent = new Entry<T>(x, level);
 
-            for (int i = 0; i < level - 1; i++) {
+        for (int i = 0; i < level; i++) {
                 ent.next[i] = last[i].next[i];
                 last[i].next[i] = ent;
             }
@@ -111,7 +127,7 @@ public class SkipList<T extends Comparable<? super T>> {
             System.out.println("Added " + ent.element);
             return true;
 
-        }
+
     }
 
     private int chooseLevel() {
@@ -131,21 +147,10 @@ public class SkipList<T extends Comparable<? super T>> {
         return null;
     }
 
-    // Does list contain x?
-    public boolean contains(T x) {
-
-        find(x);
-        if (last[0].next[0] != null) {
-            return x.compareTo((T) last[0].next[0].element) == 0;
-        } else {
-            return false;
-        }
-    }
 
     // Return first element of list
     public T first() {
         if (size > 0) {
-
             //System.out.println((head.next[0].next));
             return (T) ((head.next[0]).element);
         }
