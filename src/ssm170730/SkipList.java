@@ -3,21 +3,32 @@ package ssm170730;/* Starter code for LP2 */
 // Change this to netid of any member of team
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Random;
 
 // Skeleton for skip list implementation.
 
 public class SkipList<T extends Comparable<? super T>> {
     static final int PossibleLevels = 33;
 
+    Entry head;
+    Entry tail;
+    Entry[] last;
+    int size;
+    int maxLevel;
+    Random random;
+
     static class Entry<E> {
         E element;
         Entry[] next;
         Entry prev;
+        int[] span;
 
         public Entry(E x, int lev) {
             element = x;
             next = new Entry[lev];
             // add more code if needed
+            span = new int[lev];
         }
 
         public E getElement() {
@@ -27,11 +38,72 @@ public class SkipList<T extends Comparable<? super T>> {
 
     // Constructor
     public SkipList() {
+
+        head = new Entry<>(null,33);
+        tail = new Entry<>(null,33);
+        size = 0;
+        maxLevel = 1;
+        last = new Entry[33];
+        random = new Random();
+    }
+
+
+
+    private void find(T x)
+    {
+/*
+        if(size == 0)
+        {
+            head.next[0] = tail;
+            last[0] = head;
+            return;
+        }
+*/
+
+        Entry<T> p = head;
+        for (int i = maxLevel-1; i >= 0; i--)
+        {
+            //check NPE for tail
+            while( x.compareTo((T)p.next[i].element) > 0)
+            {
+                p = p.next[i];
+            }
+            last[i] = p;
+        }
     }
 
     // Add x to list. If x already exists, reject it. Returns true if new node is added to list
     public boolean add(T x) {
+
+        if(contains(x))
+        {
+            return false;
+        }
+
+        int level = chooseLevel();
+        Entry<T> ent = new Entry<T>(x,level);
+
+        for (int i = 0; i < level - 1; i++)
+        {
+            ent.next[i] = last[i].next[i];
+            last[i].next[i] = ent;
+        }
+        ent.next[0].prev = ent;
+        ent.prev = last[0];
+        size++;
+
         return true;
+    }
+
+    private int chooseLevel() {
+        int level = 1 + Integer.numberOfTrailingZeros(random.nextInt());
+        int newLevel = Math.min(level, maxLevel + 1);
+
+        if (newLevel > maxLevel)
+        {
+            maxLevel = newLevel;
+        }
+        return newLevel;
     }
 
     // Find smallest element that is greater or equal to x
@@ -41,7 +113,9 @@ public class SkipList<T extends Comparable<? super T>> {
 
     // Does list contain x?
     public boolean contains(T x) {
-        return false;
+
+        find(x);
+        return x.compareTo((T)last[0].next[0].element) == 0 ? true : false;
     }
 
     // Return first element of list
@@ -55,8 +129,20 @@ public class SkipList<T extends Comparable<? super T>> {
     }
 
     // Return element at index n of list.  First element is at index 0.
-    public T get(int n) {
-        return null;
+    public T get(int n) throws NoSuchElementException{
+
+        //see pdf end
+
+        if(n < 0 || n > size-1)
+        {
+            throw new NoSuchElementException();
+        }
+        Entry<T> p = head;
+        for (int i = 0; i < n; i++)
+        {
+            p = p.next[0];
+        }
+        return p.element;
     }
 
     // O(n) algorithm for get(n)
@@ -93,7 +179,17 @@ public class SkipList<T extends Comparable<? super T>> {
 
     // Remove x from list.  Removed element is returned. Return null if x not in list
     public T remove(T x) {
-        return null;
+        if(!contains(x))
+        {
+            return null;
+        }
+        Entry<T> ent = last[0].next[0];
+        for (int i = 0; i < ent.next.length - 1; i++)
+        {
+            last[i].next[i] = ent.next[i];
+        }
+        size--;
+        return ent.element;
     }
 
     // Return the number of elements in the list
