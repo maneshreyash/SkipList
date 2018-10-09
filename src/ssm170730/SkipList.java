@@ -51,48 +51,67 @@ public class SkipList<T extends Comparable<? super T>> {
 
     private void find(T x)
     {
-/*
-        if(size == 0)
-        {
-            head.next[0] = tail;
-            last[0] = head;
-            return;
-        }
-*/
-
         Entry<T> p = head;
         for (int i = maxLevel-1; i >= 0; i--)
         {
             //check NPE for tail
-            while( x.compareTo((T)p.next[i].element) > 0)
+            /*if(head.next[i] == null)
             {
+                last[i] = head;
+            }
+            else
+            {*/
+
+            while (p.next[i] != tail && (x.compareTo((T) (p.next[i].element)) > 0)) {
                 p = p.next[i];
             }
+            System.out.println(p.next[i].element);
             last[i] = p;
+
+            //}
         }
     }
 
     // Add x to list. If x already exists, reject it. Returns true if new node is added to list
     public boolean add(T x) {
 
+
+        if (size == 0) {
+            int level = head.next.length;
+            Entry<T> ent = new Entry<T>(x, level);
+
+            for (int i = 0; i < level - 1; i++) {
+                head.next[i] = ent;
+                ent.next[i] = tail;
+            }
+            ent.prev = head;
+            tail.prev = ent;
+            size++;
+
+            System.out.println("Added " + ent.element);
+            return true;
+        }
+
+
         if(contains(x))
         {
             return false;
+        } else {
+            int level = chooseLevel();
+            Entry<T> ent = new Entry<T>(x, level);
+
+            for (int i = 0; i < level - 1; i++) {
+                ent.next[i] = last[i].next[i];
+                last[i].next[i] = ent;
+            }
+            ent.next[0].prev = ent;
+            ent.prev = last[0];
+            size++;
+
+            System.out.println("Added " + ent.element);
+            return true;
+
         }
-
-        int level = chooseLevel();
-        Entry<T> ent = new Entry<T>(x,level);
-
-        for (int i = 0; i < level - 1; i++)
-        {
-            ent.next[i] = last[i].next[i];
-            last[i].next[i] = ent;
-        }
-        ent.next[0].prev = ent;
-        ent.prev = last[0];
-        size++;
-
-        return true;
     }
 
     private int chooseLevel() {
@@ -108,6 +127,7 @@ public class SkipList<T extends Comparable<? super T>> {
 
     // Find smallest element that is greater or equal to x
     public T ceiling(T x) {
+
         return null;
     }
 
@@ -115,11 +135,20 @@ public class SkipList<T extends Comparable<? super T>> {
     public boolean contains(T x) {
 
         find(x);
-        return x.compareTo((T)last[0].next[0].element) == 0 ? true : false;
+        if (last[0].next[0] != null) {
+            return x.compareTo((T) last[0].next[0].element) == 0;
+        } else {
+            return false;
+        }
     }
 
     // Return first element of list
     public T first() {
+        if (size > 0) {
+
+            //System.out.println((head.next[0].next));
+            return (T) ((head.next[0]).element);
+        }
         return null;
     }
 
@@ -147,18 +176,28 @@ public class SkipList<T extends Comparable<? super T>> {
 
     // O(n) algorithm for get(n)
     public T getLinear(int n) {
-        return null;
+
+        if (n < 0 || n > size - 1) {
+            throw new NoSuchElementException();
+        }
+        Entry<T> p = head;
+        for (int i = 0; i < n; i++) {
+            p = p.next[0];
+        }
+        return p.element;
+
     }
 
     // Optional operation: Eligible for EC.
     // O(log n) expected time for get(n). Requires maintenance of spans, as discussed in class.
     public T getLog(int n) {
+
         return null;
     }
 
     // Is the list empty?
     public boolean isEmpty() {
-        return false;
+        return size == 0;
     }
 
     // Iterate through the elements of list in sorted order
@@ -168,6 +207,9 @@ public class SkipList<T extends Comparable<? super T>> {
 
     // Return last element of list
     public T last() {
+        if (size > 0) {
+            return (T) (tail.prev.element);
+        }
         return null;
     }
 

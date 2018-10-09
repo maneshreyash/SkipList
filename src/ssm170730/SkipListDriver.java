@@ -1,9 +1,8 @@
 
 package ssm170730;
-import ssm170730.Timer;
+
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Iterator;
 import java.util.Scanner;
 
 //Driver program for skip list implementation.
@@ -45,6 +44,7 @@ public class SkipListDriver {
                 }
                 case "First": {
                     returnValue = skipList.first();
+                    System.out.println(returnValue);
                     if (returnValue != null) {
                         result = (result + returnValue) % modValue;
                     }
@@ -60,6 +60,7 @@ public class SkipListDriver {
                 }
                 case "Last": {
                     returnValue = skipList.last();
+                    System.out.println(returnValue);
                     if (returnValue != null) {
                         result = (result + returnValue) % modValue;
                     }
@@ -83,6 +84,7 @@ public class SkipListDriver {
                 case "Contains":{
                     operand = sc.nextLong();
                     if (skipList.contains(operand)) {
+                        System.out.println("Found");
                         result = (result + 1) % modValue;
                     }
                     break;
