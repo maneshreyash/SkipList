@@ -184,7 +184,6 @@ public class SkipList<T extends Comparable<? super T>> {
 
     // O(n) algorithm for get(n)
     public T getLinear(int n) {
-
         if (n < 0 || n > size - 1) {
             throw new NoSuchElementException();
         }
@@ -210,8 +209,25 @@ public class SkipList<T extends Comparable<? super T>> {
 
     // Iterate through the elements of list in sorted order
     public Iterator<T> iterator() {
-        return null;
+        return new SkipListIterator();
     }
+
+    public void printList(SkipList<T> skipList) {
+        if (size > 0) {
+        /*    Entry cursor = head.next[0];
+            while (cursor != tail) {
+                System.out.println(cursor.element);
+                cursor = cursor.next[0];
+            }*/
+            Iterator<T> it = skipList.iterator();
+            while (it.hasNext()) {
+                System.out.print(" " + it.next());
+            }
+        } else {
+            System.out.println("List is empty, nothing to print");
+        }
+    }
+
 
     // Return last element of list
     public T last() {
@@ -247,16 +263,25 @@ public class SkipList<T extends Comparable<? super T>> {
         return 0;
     }
 
-    public void printList() {
-        if (size > 0) {
-            Entry cursor = head.next[0];
-            while (cursor != tail) {
-                System.out.println(cursor.element);
-                cursor = cursor.next[0];
-            }
+    private class SkipListIterator implements Iterator<T> {
+        Entry<T> cursor;
 
-        } else {
-            System.out.println("List is empty, nothing to print");
+        SkipListIterator() {
+            cursor = head;
         }
+
+        public boolean hasNext() {
+            return cursor.next[0] != null && cursor.next[0].element != null;
+        }
+
+        public T next() {
+            cursor = cursor.next[0];
+            return cursor.element;
+        }
+
+        // Removes the current element (retrieved by the most recent next())
+       /* public void remove() {
+
+        }*/
     }
 }

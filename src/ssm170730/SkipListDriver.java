@@ -95,9 +95,8 @@ public class SkipListDriver {
                     break;
                 }
                 case "p": { //Print list
-                    skipList.printList();
+                    skipList.printList(skipList);
                 }
-
 
             }
         }
