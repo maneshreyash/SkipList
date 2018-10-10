@@ -246,4 +246,17 @@ public class SkipList<T extends Comparable<? super T>> {
     public int size() {
         return 0;
     }
+
+    public void printList() {
+        if (size > 0) {
+            Entry cursor = head.next[0];
+            while (cursor != tail) {
+                System.out.println(cursor.element);
+                cursor = cursor.next[0];
+            }
+
+        } else {
+            System.out.println("List is empty, nothing to print");
+        }
+    }
 }

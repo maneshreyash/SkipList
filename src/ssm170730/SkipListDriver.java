@@ -27,14 +27,16 @@ public class SkipListDriver {
 
         while (!((operation = sc.next()).equals("End"))) {
             switch (operation) {
-                case "Add": {
+                case "a": { //Add
                     operand = sc.nextLong();
                     if(skipList.add(operand)) {
                         result = (result + 1) % modValue;
+                    } else {
+                        System.out.println("Element already present");
                     }
                     break;
                 }
-                case "Ceiling": {
+                case "ce": { //Ceiling
                     operand = sc.nextLong();
                     returnValue = skipList.ceiling(operand);
                     if (returnValue != null) {
@@ -42,7 +44,7 @@ public class SkipListDriver {
                     }
                     break;
                 }
-                case "First": {
+                case "f": { //Floor
                     returnValue = skipList.first();
                     System.out.println(returnValue);
                     if (returnValue != null) {
@@ -50,7 +52,7 @@ public class SkipListDriver {
                     }
                     break;
                 }
-                case "Get": {
+                case "g": {//Get
                     int intOperand = sc.nextInt();
                     returnValue = skipList.get(intOperand);
                     if (returnValue != null) {
@@ -58,7 +60,7 @@ public class SkipListDriver {
                     }
                     break;
                 }
-                case "Last": {
+                case "l": { // Last
                     returnValue = skipList.last();
                     System.out.println(returnValue);
                     if (returnValue != null) {
@@ -66,7 +68,7 @@ public class SkipListDriver {
                     }
                     break;
                 }
-                case "Floor": {
+                case "fl": { //Floor
                     operand = sc.nextLong();
                     returnValue = skipList.floor(operand);
                     if (returnValue != null) {
@@ -74,21 +76,28 @@ public class SkipListDriver {
                     }
                     break;
                 }
-                case "Remove": {
+                case "r": { //Remove
                     operand = sc.nextLong();
                     if (skipList.remove(operand) != null) {
                         result = (result + 1) % modValue;
                     }
                     break;
                 }
-                case "Contains":{
+                case "c": { //Contains
                     operand = sc.nextLong();
                     if (skipList.contains(operand)) {
                         System.out.println("Found");
                         result = (result + 1) % modValue;
+                    } else {
+                        System.out.println("Not found");
                     }
+
                     break;
                 }
+                case "p": { //Print list
+                    skipList.printList();
+                }
+
 
             }
         }
