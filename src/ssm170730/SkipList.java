@@ -46,8 +46,8 @@ public class SkipList<T extends Comparable<? super T>> {
         last = new Entry[33];
         random = new Random();
 
-        for (int i = 0; i < maxLevel - 1; i++) {
-            head.next[i] = tail;
+        for (int i = 0; i < 33; i++) {
+            last[i] = head;
         }
         tail.prev = head;
     }
@@ -62,11 +62,11 @@ public class SkipList<T extends Comparable<? super T>> {
             //check NPE for tail
             while (p.next[i].element != null && (x.compareTo((T) (p.next[i].element)) > 0))
             {
-                System.out.println("Inside");
+                //System.out.println("Inside");
                 p = p.next[i];
             }
             //System.out.println("In Find p.next element "+p.next[i].element);
-            System.out.println("In Find p.element " + p.element);
+            //System.out.println("In Find p.element " + p.element);
             last[i] = p;
         }
     }
@@ -114,6 +114,7 @@ public class SkipList<T extends Comparable<? super T>> {
         Entry<T> ent = new Entry<T>(x, level);
 
         for (int i = 0; i < level; i++) {
+            //System.out.println(i);
             if (last[i].next[i] != null) {
                 ent.next[i] = last[i].next[i];
                 last[i].next[i] = ent;
