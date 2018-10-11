@@ -49,6 +49,7 @@ public class SkipList<T extends Comparable<? super T>> {
         for (int i = 0; i < 33; i++) {
             last[i] = head;
         }
+        //TODO why not update head.next to tail as well ?
         tail.prev = head;
     }
 
@@ -146,8 +147,14 @@ public class SkipList<T extends Comparable<? super T>> {
 
     // Find smallest element that is greater or equal to x
     public T ceiling(T x) {
-
-        return null;
+        find(x);
+        if (last[0].next[0].element == null) { // Checks if it is the last element in the list
+            System.out.println(" Ceil Value = " + last[0].element);
+            return (T) last[0].element;
+        } else {
+            System.out.println(" Ceil value = " + last[0].next[0].element);
+            return (T) last[0].next[0].element;
+        }
     }
 
 
@@ -162,6 +169,15 @@ public class SkipList<T extends Comparable<? super T>> {
 
     // Find largest element that is less than or equal to x
     public T floor(T x) {
+        if (size > 0) {
+            if (contains(x)) {
+                System.out.println(" Floor value = " + last[0].next[0].element);
+                return (T) last[0].next[0].element;
+            } else {
+                System.out.println(" Floor value = " + last[0].element);
+                return (T) last[0].element;
+            }
+        }
         return null;
     }
 
@@ -247,12 +263,24 @@ public class SkipList<T extends Comparable<? super T>> {
         return 0;
     }
 
-    public void printList() {
+    public void printListAmeya() {
         if (size > 0) {
             Entry cursor = head.next[0];
+            System.out.println("Max Level = " + (maxLevel - 1));
+            System.out.println("Size = " + size);
+            System.out.println();
+            System.out.println("Element   No of Levels");
+            System.out.println(head.element + " " + maxLevel);
             while (cursor != tail) {
-                System.out.println(cursor.element);
+                System.out.print(" " + cursor.element);
+                System.out.println(" \t " + cursor.next.length);
                 cursor = cursor.next[0];
+            }
+            System.out.println();
+
+            System.out.println("Printing Last Array = ");
+            for (int i = maxLevel - 1; i >= 0; i--) {
+                System.out.println(last[i].element);
             }
 
         } else {

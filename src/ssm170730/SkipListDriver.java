@@ -44,7 +44,7 @@ public class SkipListDriver {
                     }
                     break;
                 }
-                case "f": { //Floor
+                case "f": { //First
                     returnValue = skipList.first();
                     System.out.println(returnValue);
                     if (returnValue != null) {
@@ -65,6 +65,8 @@ public class SkipListDriver {
                     System.out.println(returnValue);
                     if (returnValue != null) {
                         result = (result + returnValue) % modValue;
+                    } else {
+                        System.out.println("null");
                     }
                     break;
                 }
@@ -73,6 +75,9 @@ public class SkipListDriver {
                     returnValue = skipList.floor(operand);
                     if (returnValue != null) {
                         result = (result + returnValue) % modValue;
+                        //System.out.println(result);
+                    } else {
+                        System.out.println("null");
                     }
                     break;
                 }
@@ -95,8 +100,9 @@ public class SkipListDriver {
                     break;
                 }
                 case "p": { //Print list
-                    skipList.printList();
+                    skipList.printListAmeya();
                 }
+                break;
 
 
             }
