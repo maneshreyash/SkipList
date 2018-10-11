@@ -260,8 +260,60 @@ public class SkipList<T extends Comparable<? super T>> {
 
     // Optional operation: Eligible for EC.
     // O(log n) expected time for get(n). Requires maintenance of spans, as discussed in class.
-    public T getLog(int n) {
+    public T getLog(int n)
+    {
+        if(n > size - 1 || n < 0)
+        {
+            return null;
+        }
 
+        Entry<T> cursor = head;
+        int i = maxLevel-1;
+        int t = 0;
+        while(i >= 0)
+        {
+            if (cursor.span[i] >= n - t)
+            {
+                if (n == 0 && cursor == head){
+                    return (T) cursor.next[0].getElement();
+                }
+                i--;
+            }
+            else if(cursor.span[i] < n - t)
+            {
+                if (cursor == head) {
+                    if(cursor.span[i] == 0)
+                    {
+                        //t++;
+                        cursor = cursor.next[i];
+                    }
+                    else if(cursor.span[i] > 0)
+                    {
+                        t = t + cursor.span[i];
+                        cursor = cursor.next[i];
+                    }
+                }
+                else
+                    {
+                    if(cursor.span[i] == 0)
+                    {
+                        t++;
+                        cursor = cursor.next[i];
+                    }
+                    else if(cursor.span[i] > 0)
+                    {
+                        t = t + cursor.span[i] + 1;
+                        cursor = cursor.next[i];
+                    }
+
+                }
+            }
+            //else
+        }
+        if(n == t)
+        {
+            return cursor.getElement();
+        }
         return null;
     }
 
