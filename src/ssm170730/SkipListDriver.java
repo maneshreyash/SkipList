@@ -44,7 +44,7 @@ public class SkipListDriver {
                     }
                     break;
                 }
-                case "f": { //Floor
+                case "f": { //First
                     returnValue = skipList.first();
                     System.out.println(returnValue);
                     if (returnValue != null) {

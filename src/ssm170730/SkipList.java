@@ -33,8 +33,6 @@ public class SkipList<T extends Comparable<? super T>> {
             //System.arraycopy(span, 0, updateSpan(next, x), span.length - 1, span.length);
         }
 
-
-
         public E getElement() {
             return element;
         }
@@ -43,14 +41,14 @@ public class SkipList<T extends Comparable<? super T>> {
     // Constructor
     public SkipList() {
 
-        head = new Entry<>(null,33);
-        tail = new Entry<>(null,33);
+        head = new Entry<>(null,PossibleLevels);
+        tail = new Entry<>(null,PossibleLevels);
         size = 0;
         maxLevel = 1;
-        last = new Entry[33];
+        last = new Entry[PossibleLevels];
         random = new Random();
 
-        for (int i = 0; i < 33; i++) {
+        for (int i = 0; i < PossibleLevels; i++) {
             last[i] = head;
         }
         tail.prev = head;
@@ -108,7 +106,7 @@ public class SkipList<T extends Comparable<? super T>> {
             tail.prev = ent;
             size++;
             System.out.println(level + ": Added " + ent.element);
-            ent.span = updateSpan(level, ent);
+            /*ent.span =*/updateSpan(level, ent);
             //System.arraycopy(ent.span, 0, updateSpan(level, ent), level - 1, level);
             return true;
         }
@@ -120,9 +118,17 @@ public class SkipList<T extends Comparable<? super T>> {
 
         if(addHelper(x)){
             //updateHeadSpan();
-            Entry spanner = head.next[0];
+            //Entry spanner = head.next[0];
+            Entry spanner = head;
+
+            if(spanner == head)
+            {
+                updateSpan(maxLevel, spanner);
+                spanner = spanner.next[0];
+            }
+
             while(x.compareTo((T) spanner.element) > 0){
-                System.out.println("I'm updating span for: " + spanner.element);
+                //System.out.println("I'm updating span for: " + spanner.element);
                 updateSpan(spanner.next.length, spanner);
                 spanner = spanner.next[0];
             }
@@ -151,34 +157,38 @@ public class SkipList<T extends Comparable<? super T>> {
             }
         }
         size++;
-        ent.span = updateSpan(level, ent);
+        /*ent.span =*/updateSpan(level, ent);
         System.out.println(level + ": Added " + ent.element);
         return true;
     }
 
-    private int[] updateSpan(int level, Entry ent){
+    private void updateSpan(int level, Entry ent){
+
         //int[] arr = new int[level];
         ent.span[0] = 0;
         int count = 0;
         for(int i = 1; i < level; i++){
             count = 0;
             Entry cursor = ent;
+            //checking tail
             if(ent.next[i].element == null){
                 while(cursor.next[0].element != null){
                     count++;
                     cursor = cursor.next[0];
                 }
-            }else {
+            }
+            else {
                 while (cursor.next[0].element != null && ((T) ent.next[i].element).compareTo((T) cursor.next[0].element) != 0) {
-                    System.out.println("in here ");
+                    //System.out.println("in here ");
                     count++;
                     cursor = cursor.next[0];
                 }
             }
             ent.span[i] = count;
         }
-        return ent.span;
+        //return ent.span;
     }
+
 
     private int chooseLevel() {
         int level = 1 + Integer.numberOfTrailingZeros(random.nextInt());
