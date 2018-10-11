@@ -100,10 +100,9 @@ public class SkipListDriver {
                     break;
                 }
                 case "p": { //Print list
-                    skipList.printListAmeya();
-                }
+                    skipList.printList(skipList);
                 break;
-
+                }
 
             }
         }
