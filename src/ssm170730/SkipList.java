@@ -2,6 +2,7 @@ package ssm170730;/* Starter code for LP2 */
 
 // Change this to netid of any member of team
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
@@ -29,7 +30,10 @@ public class SkipList<T extends Comparable<? super T>> {
             next = new Entry[lev];
             // add more code if needed
             span = new int[lev];
+            //System.arraycopy(span, 0, updateSpan(next, x), span.length - 1, span.length);
         }
+
+
 
         public E getElement() {
             return element;
@@ -88,6 +92,9 @@ public class SkipList<T extends Comparable<? super T>> {
         }
     }
     // Add x to list. If x already exists, reject it. Returns true if new node is added to list
+
+
+
     public boolean add(T x) {
         if (size == 0) {
             int level = maxLevel;
@@ -100,7 +107,9 @@ public class SkipList<T extends Comparable<? super T>> {
             ent.prev = head;
             tail.prev = ent;
             size++;
-            System.out.println("Added " + ent.element);
+            System.out.println(level + ": Added " + ent.element);
+            ent.span = updateSpan(level, ent);
+            //System.arraycopy(ent.span, 0, updateSpan(level, ent), level - 1, level);
             return true;
         }
 
@@ -109,6 +118,20 @@ public class SkipList<T extends Comparable<? super T>> {
             return false;
         }
 
+        if(addHelper(x)){
+            //updateHeadSpan();
+            Entry spanner = head.next[0];
+            while(x.compareTo((T) spanner.element) > 0){
+                System.out.println("I'm updating span for: " + spanner.element);
+                updateSpan(spanner.next.length, spanner);
+                spanner = spanner.next[0];
+            }
+        }
+        return true;
+    }
+
+
+    private boolean addHelper(T x){
 
         int level = chooseLevel();
         Entry<T> ent = new Entry<T>(x, level);
@@ -128,9 +151,33 @@ public class SkipList<T extends Comparable<? super T>> {
             }
         }
         size++;
-        System.out.println("Added " + ent.element);
+        ent.span = updateSpan(level, ent);
+        System.out.println(level + ": Added " + ent.element);
         return true;
+    }
 
+    private int[] updateSpan(int level, Entry ent){
+        //int[] arr = new int[level];
+        ent.span[0] = 0;
+        int count = 0;
+        for(int i = 1; i < level; i++){
+            count = 0;
+            Entry cursor = ent;
+            if(ent.next[i].element == null){
+                while(cursor.next[0].element != null){
+                    count++;
+                    cursor = cursor.next[0];
+                }
+            }else {
+                while (cursor.next[0].element != null && ((T) ent.next[i].element).compareTo((T) cursor.next[0].element) != 0) {
+                    System.out.println("in here ");
+                    count++;
+                    cursor = cursor.next[0];
+                }
+            }
+            ent.span[i] = count;
+        }
+        return ent.span;
     }
 
     private int chooseLevel() {
@@ -214,11 +261,11 @@ public class SkipList<T extends Comparable<? super T>> {
 
     public void printList(SkipList<T> skipList) {
         if (size > 0) {
-        /*    Entry cursor = head.next[0];
+            Entry cursor = head.next[0];
             while (cursor != tail) {
-                System.out.println(cursor.element);
+                System.out.println(cursor.next.length + " : " + cursor.element + " Span Array : " + Arrays.toString(cursor.span));
                 cursor = cursor.next[0];
-            }*/
+            }
             Iterator<T> it = skipList.iterator();
             while (it.hasNext()) {
                 System.out.print(" " + it.next());
