@@ -308,13 +308,17 @@ public class SkipList<T extends Comparable<? super T>> {
 
     // Remove x from list.  Removed element is returned. Return null if x not in list
     public T remove(T x) {
+        if (size < 0) {
+            return null;
+        }
         if (!contains(x)) {
             return null;
         }
         Entry<T> ent = last[0].next[0];
-        for (int i = 0; i < ent.next.length - 1; i++) {
+        for (int i = 0; i <= ent.next.length - 1; i++) {
             last[i].next[i] = ent.next[i];
         }
+        System.out.println(" Element removed = " + ent.element);
         size--;
         return ent.element;
     }
@@ -322,6 +326,28 @@ public class SkipList<T extends Comparable<? super T>> {
     // Return the number of elements in the list
     public int size() {
         return size;
+    }
+
+    public void printListAmeya() {
+        if (size > 0) {
+            Entry cursor = head.next[0];
+            System.out.println("Max Level = " + (maxLevel - 1));
+            System.out.println("Size = " + size);
+            System.out.println();
+            System.out.println("Element   No of Levels");
+            System.out.println(head.element + " " + maxLevel);
+            while (cursor != tail) {
+                System.out.print(" " + cursor.element);
+                System.out.println(" \t " + cursor.next.length);
+                cursor = cursor.next[0];
+            }
+            System.out.println();
+
+            System.out.println("Printing Last Array = ");
+            for (int i = maxLevel - 1; i >= 0; i--) {
+                System.out.println(last[i].element);
+            }
+        }
     }
 
     private class SkipListIterator implements Iterator<T> {
@@ -340,25 +366,7 @@ public class SkipList<T extends Comparable<? super T>> {
             return cursor.element;
         }
 
-        public void printListAmeya() {
-            if (size > 0) {
-                Entry cursor = head.next[0];
-                System.out.println("Max Level = " + (maxLevel - 1));
-                System.out.println("Size = " + size);
-                System.out.println();
-                System.out.println("Element   No of Levels");
-                System.out.println(head.element + " " + maxLevel);
-                while (cursor != tail) {
-                    System.out.print(" " + cursor.element);
-                    System.out.println(" \t " + cursor.next.length);
-                    cursor = cursor.next[0];
-                }
-                System.out.println();
 
-                System.out.println("Printing Last Array = ");
-                for (int i = maxLevel - 1; i >= 0; i--) {
-                    System.out.println(last[i].element);
-                }
 
                 // Removes the current element (retrieved by the most recent next())
        /* public void remove() {
@@ -366,5 +374,4 @@ public class SkipList<T extends Comparable<? super T>> {
         }*/
             }
         }
-    }
-}
+

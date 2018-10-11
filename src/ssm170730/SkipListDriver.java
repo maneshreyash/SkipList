@@ -85,6 +85,8 @@ public class SkipListDriver {
                     operand = sc.nextLong();
                     if (skipList.remove(operand) != null) {
                         result = (result + 1) % modValue;
+                    } else {
+                        System.out.println("No element to remove");
                     }
                     break;
                 }
@@ -102,6 +104,9 @@ public class SkipListDriver {
                 case "p": { //Print list
                     skipList.printList(skipList);
                 break;
+                }
+                case "pa": { //Prints elements with last array inside it
+                    skipList.printListAmeya();
                 }
 
             }
