@@ -67,6 +67,8 @@ public class SkipListDriver {
                     System.out.println(returnValue);
                     if (returnValue != null) {
                         result = (result + returnValue) % modValue;
+                    } else {
+                        System.out.println("null");
                     }
                     break;
                 }
@@ -75,6 +77,9 @@ public class SkipListDriver {
                     returnValue = skipList.floor(operand);
                     if (returnValue != null) {
                         result = (result + returnValue) % modValue;
+                        //System.out.println(result);
+                    } else {
+                        System.out.println("null");
                     }
                     break;
                 }
@@ -82,6 +87,8 @@ public class SkipListDriver {
                     operand = sc.nextLong();
                     if (skipList.remove(operand) != null) {
                         result = (result + 1) % modValue;
+                    } else {
+                        System.out.println("No element to remove");
                     }
                     break;
                 }
@@ -98,6 +105,10 @@ public class SkipListDriver {
                 }
                 case "p": { //Print list
                     skipList.printList(skipList);
+                break;
+                }
+                case "pa": { //Prints elements with last array inside it
+                    skipList.printListAmeya();
                 }
 
             }
