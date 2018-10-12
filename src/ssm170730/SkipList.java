@@ -79,7 +79,7 @@ public class SkipList<T extends Comparable<? super T>> {
         }
 
         find(x);
-        if (last[0].next[0].element != null) {
+        if (last[0].next[0].element != null) {//Check if it is added to the end
             return x.compareTo((T) (last[0].next[0].element)) == 0;
         } else {
             return false;
@@ -92,7 +92,7 @@ public class SkipList<T extends Comparable<? super T>> {
         if (size == 0) {
             int level = maxLevel;
             Entry<T> ent = new Entry<T>(x, level);
-
+            //TODO No need of for loop as it will run only once
             for (int i = 0; i < level; i++) {
                 head.next[i] = ent;
                 ent.next[i] = tail;
@@ -138,7 +138,7 @@ public class SkipList<T extends Comparable<? super T>> {
 
         for (int i = 0; i < level; i++) {
             //System.out.println(i);
-            if (last[i].next[i] != null) {
+            if (last[i].next[i] != null) {//Check if it is the last element
                 ent.next[i] = last[i].next[i];
                 last[i].next[i] = ent;
                 ent.next[i].prev = ent;
@@ -146,6 +146,7 @@ public class SkipList<T extends Comparable<? super T>> {
             } else {
                 ent.next[i] = tail;
                 last[i].next[i] = ent;
+                //TODO Wrong condition, not working if I add 7 after 3 in a list of total 2 elements, sets prev of 7 to null
                 ent.prev = last[i];
                 tail.prev = ent;
             }
@@ -367,12 +368,33 @@ public class SkipList<T extends Comparable<? super T>> {
             return null;
         }
         Entry<T> ent = last[0].next[0];
-        for (int i = 0; i <= ent.next.length - 1; i++) {
+        for (int i = 0; i < ent.next.length ; i++) {
             last[i].next[i] = ent.next[i];
         }
+
+        updateSpanAfterRemove(ent);
         System.out.println(" Element removed = " + ent.element);
         size--;
         return ent.element;
+    }
+
+    private void updateSpanAfterRemove(Entry<T> ent) {
+        Entry spanner = head;
+        updateSpan(maxLevel, spanner);
+        spanner = spanner.next[0];
+        if (ent.next[0] == tail){
+            while (spanner != tail){
+                updateSpan(spanner.next.length, spanner);
+                spanner = spanner.next[0];
+            }
+
+        }else {
+            while (((T) ent.next[0].element).compareTo((T) spanner.element) > 0) {
+                //System.out.println("I'm updating span for: " + spanner.element);
+                updateSpan(spanner.next.length, spanner);
+                spanner = spanner.next[0];
+            }
+        }
     }
 
     // Return the number of elements in the list
