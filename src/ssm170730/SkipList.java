@@ -1,13 +1,21 @@
-package ssm170730;/* Starter code for LP2 */
-
-// Change this to netid of any member of team
+package ssm170730;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
-// Skeleton for skip list implementation.
+/**
+ * Implementation of Skip List Data Structure, an indexed list of items which provides O (Log n) runtime for
+ * add, remove, get etc. operations.
+ * Skip list is an implementation of Dictionary Abstract Data type which compete with balanced search trees like AVL,
+ * Red-Black trees.
+ * The skip list prefers to skip certain indexes for its basic operations which provides us with faster
+ * results than any other type of list.
+ * <p>
+ * This project has been developed by Shreyash Mane ssm170730, Sunny Bangale shb170230,
+ * Ketki Mahajan krm150330 and Ameya Kasar aak170230
+ */
 
 public class SkipList<T extends Comparable<? super T>> {
     static final int PossibleLevels = 33;
@@ -28,7 +36,6 @@ public class SkipList<T extends Comparable<? super T>> {
         public Entry(E x, int lev) {
             element = x;
             next = new Entry[lev];
-            // add more code if needed
             span = new int[lev];
         }
 
@@ -48,6 +55,7 @@ public class SkipList<T extends Comparable<? super T>> {
         random = new Random();
 
         for (int i = 0; i < PossibleLevels; i++) {
+            //Initially making all the indices of last to point to head
             last[i] = head;
         }
         //TODO why not update head.next to tail as well ?
@@ -55,29 +63,33 @@ public class SkipList<T extends Comparable<? super T>> {
     }
 
 
+    /**
+     * Helps us to trace a path to reach an element in the skip list by updating the @last array
+     * where the last[0] stores the location of the Entry just previous to the @{@link Entry} element in the
+     * list, if the element is not present, last[0] will store the position of @{@link Entry} element least smaller
+     * than x
+     * @param x Element to be found in the list
+     */
     private void find(T x) {
         Entry<T> p = head;
         for (int i = maxLevel - 1; i >= 0; i--) {
-            //check NPE for tail
             while (p.next[i].element != null && (x.compareTo((T) (p.next[i].element)) > 0)) {
-                //System.out.println("Inside");
                 p = p.next[i];
             }
-            //System.out.println("In Find p.next element "+p.next[i].element);
-            //System.out.println("In Find p.element " + p.element);
             last[i] = p;
         }
     }
 
 
-    // Does list contain x?
+    /**
+     * Returns true if the @x is present in the list
+     * @param x element whose presence is to be searched for
+     * @return false if absent
+     */
     public boolean contains(T x) {
-
-
         if (size == 0) {
             return false;
         }
-
         find(x);
         if (last[0].next[0].element != null) {//Check if it is added to the end
             return x.compareTo((T) (last[0].next[0].element)) == 0;
@@ -85,8 +97,13 @@ public class SkipList<T extends Comparable<? super T>> {
             return false;
         }
     }
-    // Add x to list. If x already exists, reject it. Returns true if new node is added to list
 
+
+    /**
+     * Add x to list. If x already exists, reject it. Returns true if new node is added to list
+     * @param x Element to be added in the list
+     * @return true if add is successful
+     */
 
     public boolean add(T x) {
         if (size == 0) {
@@ -110,19 +127,13 @@ public class SkipList<T extends Comparable<? super T>> {
         if (contains(x)) {
             return false;
         }
-
         if (addHelper(x)) {
-            //updateHeadSpan();
-            //Entry spanner = head.next[0];
             Entry spanner = head;
-
             if (spanner == head) {
                 updateSpan(maxLevel, spanner);
                 spanner = spanner.next[0];
             }
-
             while (x.compareTo((T) spanner.element) > 0) {
-                //System.out.println("I'm updating span for: " + spanner.element);
                 updateSpan(spanner.next.length, spanner);
                 spanner = spanner.next[0];
             }
@@ -130,15 +141,18 @@ public class SkipList<T extends Comparable<? super T>> {
         return true;
     }
 
-
+    /**
+     * A utility method that helps us in adding an element when there is atleast 1 element in the list
+     * @param x Eleement to be added in the list
+     * @return true if add is successful
+     */
     private boolean addHelper(T x) {
 
         int level = chooseLevel();
         Entry<T> ent = new Entry<T>(x, level);
 
         for (int i = 0; i < level; i++) {
-            //System.out.println(i);
-            if (last[i].next[i] != null) {//Check if it is the last element
+            if (last[i].next[i] != null) {//Checks if it is the last element
                 ent.next[i] = last[i].next[i];
                 last[i].next[i] = ent;
                 ent.next[i].prev = ent;
@@ -152,15 +166,17 @@ public class SkipList<T extends Comparable<? super T>> {
             }
         }
         size++;
-        /*ent.span =*/
         updateSpan(level, ent);
         System.out.println(level + ": Added " + ent.element);
         return true;
     }
 
+    /**
+     * Updates the span array for the given @{@link Entry} by using the provided length of the next[] for the entry
+     * @param level the length of next[] for the new entry
+     * @param ent for which the span is to be calculated
+     */
     private void updateSpan(int level, Entry ent) {
-
-        //int[] arr = new int[level];
         ent.span[0] = 0;
         int count = 0;
         for (int i = 1; i < level; i++) {
@@ -174,17 +190,19 @@ public class SkipList<T extends Comparable<? super T>> {
                 }
             } else {
                 while (cursor.next[0].element != null && ((T) ent.next[i].element).compareTo((T) cursor.next[0].element) != 0) {
-                    //System.out.println("in here ");
                     count++;
                     cursor = cursor.next[0];
                 }
             }
             ent.span[i] = count;
         }
-        //return ent.span;
     }
 
 
+    /**
+     * Provides with a the level for each Entry and updates the @maxLevel param each time this method is called
+     * @return the level that will be assigned to the calling entity
+     */
     private int chooseLevel() {
         int level = 1 + Integer.numberOfTrailingZeros(random.nextInt());
         int newLevel = Math.min(level, maxLevel + 1);
@@ -195,7 +213,12 @@ public class SkipList<T extends Comparable<? super T>> {
         return newLevel;
     }
 
-    // Find smallest element that is greater or equal to x
+
+    /**
+     * Finds smallest element that is greater or equal to x
+     * @param x for which ceiling value is needed
+     * @return Ceiling value for x
+     */
     public T ceiling(T x) {
         find(x);
         if (last[0].next[0].element == null) { // Checks if it is the last element in the list
@@ -207,8 +230,10 @@ public class SkipList<T extends Comparable<? super T>> {
         }
     }
 
-
-    // Return first element of list
+    /**
+     *Returns first element of list
+     * @return first element in the list, null if list is empty
+     */
     public T first() {
         if (size > 0) {
             //System.out.println((head.next[0].next));
@@ -217,7 +242,12 @@ public class SkipList<T extends Comparable<? super T>> {
         return null;
     }
 
-    // Find largest element that is less than or equal to x
+
+    /**
+     * Finds largest element that is less than or equal to x
+     * @param x for which floor value is needed
+     * @return Floor value for x
+     */
     public T floor(T x) {
         if (size > 0) {
             if (contains(x)) {
