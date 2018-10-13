@@ -10,6 +10,7 @@ import java.util.Scanner;
 public class SkipListDriver {
     public static void main(String[] args) throws FileNotFoundException {
         Scanner sc;
+        int i = 0;
         if (args.length > 0) {
             File file = new File(args[0]);
             sc = new Scanner(file);
@@ -27,88 +28,91 @@ public class SkipListDriver {
 
         while (!((operation = sc.next()).equals("End"))) {
             switch (operation) {
-                case "a": { //Add
+                case "Add": {
+                    i++;
                     operand = sc.nextLong();
                     if(skipList.add(operand)) {
+                        System.out.println(i + "\t Add " + " : " + operand + " " + true);
                         result = (result + 1) % modValue;
                     } else {
-                        System.out.println("Element already present");
+                        System.out.println(i + "\t Add " + " : " + operand + " " + false);
                     }
                     break;
                 }
-                case "ce": { //Ceiling
+                case "Ceiling": {
+                    i++;
                     operand = sc.nextLong();
                     returnValue = skipList.ceiling(operand);
-                    if (returnValue != null) {
-                        result = (result + returnValue) % modValue;
-                    }
-                    break;
-                }
-                case "f": { //First
-                    returnValue = skipList.first();
-                    System.out.println(returnValue);
-                    if (returnValue != null) {
-                        result = (result + returnValue) % modValue;
-                    }
-                    break;
-                }
-                case "g": {//Get
-                    int intOperand = sc.nextInt();
-                    returnValue = skipList.getLog(intOperand);
-                    System.out.println(returnValue);
-                    if (returnValue != null) {
-
-                        result = (result + returnValue) % modValue;
-                    }
-                    break;
-                }
-                case "l": { // Last
-                    returnValue = skipList.last();
-                    System.out.println(returnValue);
-                    if (returnValue != null) {
-                        result = (result + returnValue) % modValue;
-                    } else {
-                        System.out.println("null");
-                    }
-                    break;
-                }
-                case "fl": { //Floor
-                    operand = sc.nextLong();
-                    returnValue = skipList.floor(operand);
+                    System.out.println(i + "\t Ceiling " + returnValue);
                     if (returnValue != null) {
                         result = (result + returnValue) % modValue;
                         //System.out.println(result);
-                    } else {
-                        System.out.println("null");
                     }
                     break;
                 }
-                case "r": { //Remove
+                case "First": {
+                    i++;
+                    returnValue = skipList.first();
+                    System.out.println(i + "\t First " + returnValue);
+                    if (returnValue != null) {
+                        result = (result + returnValue) % modValue;
+                    }
+                    break;
+                }
+                case "Get": {
+                    i++;
+                    int intOperand = sc.nextInt();
+                    returnValue = skipList.get(intOperand);
+                    System.out.println(i + "\t Get " + returnValue);
+                    if (returnValue != null) {
+                        result = (result + returnValue) % modValue;
+                        //System.out.println(result);
+                    }
+                    break;
+                }
+                case "Last": {
+                    i++;
+                    returnValue = skipList.last();
+                    System.out.println(i + "\t Last " + returnValue);
+                    if (returnValue != null) {
+                        result = (result + returnValue) % modValue;
+                    }
+                    break;
+                }
+                case "Floor": {
+                    i++;
+                    operand = sc.nextLong();
+                    returnValue = skipList.floor(operand);
+                    System.out.println(i + "\tFloor =  " + returnValue);
+                    if (returnValue != null) {
+                        result = (result + returnValue) % modValue;
+                        //System.out.println(result);
+                    }
+                    break;
+                }
+                case "Remove": {
+                    i++;
                     operand = sc.nextLong();
                     if (skipList.remove(operand) != null) {
                         result = (result + 1) % modValue;
+                        System.out.println(i + "\t Remove " + " : " + operand + " " + true);
+                        //System.out.println(result);
                     } else {
-                        System.out.println("No element to remove");
+                        System.out.println(i + "\t Remove " + " : " + operand + " " + false);
                     }
                     break;
                 }
-                case "c": { //Contains
+                case "Contains": {
+                    i++;
                     operand = sc.nextLong();
                     if (skipList.contains(operand)) {
-                        System.out.println("Found");
+                        System.out.println(i + "\t Contains " + " : " + operand + " " + true);
                         result = (result + 1) % modValue;
+                        //System.out.println(result);
                     } else {
-                        System.out.println("Not found");
+                        System.out.println(i + "\t Contains " + " : " + operand + " " + false);
                     }
-
                     break;
-                }
-                case "p": { //Print list
-                    skipList.printList(skipList);
-                break;
-                }
-                case "pa": { //Prints elements with last array inside it
-                    skipList.printListAmeya();
                 }
 
             }
@@ -121,3 +125,5 @@ public class SkipListDriver {
         System.out.println(timer);
     }
 }
+
+//Test cases failed  (Expected/Actual) = 03  70918/66207,11 = 163/157 ,12 = 1013/1009, 13 = 4002/3952, 14 = 445138/510519

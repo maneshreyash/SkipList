@@ -117,7 +117,7 @@ public class SkipList<T extends Comparable<? super T>> {
             ent.prev = head;
             tail.prev = ent;
             size++;
-            System.out.println(level + ": Added " + ent.element);
+            //System.out.println(level + ": Added " + ent.element);
             /*ent.span =*/
             updateSpan(level, ent);
             //System.arraycopy(ent.span, 0, updateSpan(level, ent), level - 1, level);
@@ -168,7 +168,7 @@ public class SkipList<T extends Comparable<? super T>> {
         }
         size++;
         updateSpan(level, ent);
-        System.out.println(level + ": Added " + ent.element);
+        // System.out.println(level + ": Added " + ent.element);
         return true;
     }
 
@@ -224,12 +224,25 @@ public class SkipList<T extends Comparable<? super T>> {
     public T ceiling(T x) {
         find(x);
         if (last[0].next[0].element == null) { // Checks if it is the last element in the list
-            System.out.println(" Ceil Value = " + last[0].element);
-            return (T) last[0].element;
+            //System.out.println("No Celing in list ");
+            return null;
         } else {
-            System.out.println(" Ceil value = " + last[0].next[0].element);
+            //System.out.println(" Ceil value = " + last[0].next[0].element);
             return (T) last[0].next[0].element;
         }
+        /*if (contains(x)){
+            System.out.println(" Ceil value = " + last[0].next[0].element);
+            return (T) last[0].next[0].element;
+        }else{
+            if (last[0].next[0].element == null) { // Checks if it is the last element in the list
+                System.out.println(" Ceiling not in the list");
+                return null;
+            } else {
+                System.out.println(" Ceil value = " + last[0].next[0].element);
+                return (T) last[0].next[0].element;
+            }
+
+        }*/
     }
 
     /**
@@ -254,10 +267,10 @@ public class SkipList<T extends Comparable<? super T>> {
     public T floor(T x) {
         if (size > 0) {
             if (contains(x)) {
-                System.out.println(" Floor value = " + last[0].next[0].element);
+                // System.out.println(" Floor value = " + last[0].next[0].element);
                 return (T) last[0].next[0].element;
             } else {
-                System.out.println(" Floor value = " + last[0].element);
+                //System.out.println(" Floor value = " + last[0].element);
                 return (T) last[0].element;
             }
         }
@@ -271,12 +284,12 @@ public class SkipList<T extends Comparable<? super T>> {
      * @return the element present at n index
      * @throws NoSuchElementException if n is not within the size of the input array
      */
-    public T get(int n) throws NoSuchElementException {
+    public T get(int n) {
         if (n < 0 || n > size - 1) {
-            throw new NoSuchElementException();
+            return null;
         }
         Entry<T> p = head;
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i <= n; i++) {
             p = p.next[0];
         }
         return p.element;
@@ -363,15 +376,22 @@ public class SkipList<T extends Comparable<? super T>> {
     }
 
     /**
+     *
      * Returns last element of list
      *
      * @return last element if size > 0 else returns null
      */
     public T last() {
+        T temp = null;
         if (size > 0) {
-            return (T) (tail.prev.element);
+            //return (T) (tail.prev.element);
+            Entry curr = head;
+            while (curr != tail) {
+                temp = (T) curr.element;
+                curr = curr.next[0];
+            }
         }
-        return null;
+        return temp;
     }
 
     /**
@@ -390,12 +410,13 @@ public class SkipList<T extends Comparable<? super T>> {
             return null;
         }
         Entry<T> ent = last[0].next[0];
+        //ent.next[0].prev = last[0];
         for (int i = 0; i < ent.next.length; i++) {
             last[i].next[i] = ent.next[i];
         }
 
         updateSpanAfterRemove(ent);
-        System.out.println(" Element removed = " + ent.element);
+        // System.out.println(" Element removed = " + ent.element);
         size--;
         return ent.element;
     }
