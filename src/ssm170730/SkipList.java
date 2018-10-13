@@ -285,14 +285,15 @@ public class SkipList<T extends Comparable<? super T>> {
      * @throws NoSuchElementException if n is not within the size of the input array
      */
     public T get(int n) {
-        if (n < 0 || n > size - 1) {
+        /*if (n < 0 || n > size - 1) {
             return null;
         }
         Entry<T> p = head;
         for (int i = 0; i <= n; i++) {
             p = p.next[0];
         }
-        return p.element;
+        return p.element;*/
+        return getLog(n);
     }
 
     /**
@@ -514,9 +515,13 @@ public class SkipList<T extends Comparable<? super T>> {
         }
 
         // Removes the current element (retrieved by the most recent next())
-       /* public void remove() {
-
-        }*/
+        public void remove() {
+            if (hasNext()) {
+                SkipList.this.remove((T) cursor.next[0].element);
+            } else {
+                System.out.println("No Elements to remove");
+            }
+        }
     }
 }
 
