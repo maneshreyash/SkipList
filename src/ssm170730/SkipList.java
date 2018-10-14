@@ -281,7 +281,7 @@ public class SkipList<T extends Comparable<? super T>> {
      * @throws NoSuchElementException if n is not within the size of the input array
      */
     public T get(int n) throws NoSuchElementException {
-        if (n < 0 || n > size - 1) {
+        if (n < 0 || n > size) {
             throw new NoSuchElementException();
         }
         Entry<T> p = head;
@@ -297,15 +297,16 @@ public class SkipList<T extends Comparable<? super T>> {
      * @param n the index n at which the element is seeked at
      * @return the element at index n
      */
-    public T getLinear(int n) {
-        if (n < 0 || n > size - 1) {
+    public Entry<T> getLinear(long n) {
+        if (n < 0 || n > size + 1) {
             throw new NoSuchElementException();
         }
         Entry<T> p = head;
+
         for (int i = 0; i < n; i++) {
             p = p.next[0];
         }
-        return p.element;
+        return p;
 
     }
 
@@ -392,53 +393,57 @@ public class SkipList<T extends Comparable<? super T>> {
         int maxL = (int) (Math.log(size + 2) / Math.log(2));
         System.out.println(maxL);
 
+        for (int i = 0; i < 63; i++) {
+            System.out.println("a " + i);
+        }
+
         assignHeight(0, size + 1, maxL);
 
 
-        Entry<T> cursor;
-        Entry<T> nextCursor;
-        for (int i = 1; i < maxL; i++) {
-            cursor = head;
-            nextCursor = cursor.next[i - 1];
-
-            //nextCursor != tail
-            while (true) {
-                //System.out.println(nextCursor);
-                //if(nextCursor.next[0] != null)
-                //{
-                if (nextCursor.next.length > i) {
-                    cursor.next[i] = nextCursor;
-                    System.out.println(" from " + cursor.element + " to " + nextCursor.element);
-
-                    cursor = nextCursor;
-                    nextCursor = cursor.next[i - 1];
-
-
-                    if (nextCursor == tail) {
-                        System.out.println("nc at tail");
-                        cursor.next[i] = tail;
-                        break;
-                    }
-
-                } else {
-                    nextCursor = nextCursor.next[i - 1];
-                    if (nextCursor == tail) {
-                        System.out.println(" from " + cursor.element + " to " + nextCursor.element);
-                        cursor.next[i] = tail;
-                        break;
-                    }
-                }
-                //}
-
-
-            }
-            if (nextCursor == tail)
-            {
-                cursor.next[i] = tail;
-            }
-        }
-
-        System.out.println("Rebuild Done");
+//        Entry<T> cursor;
+//        Entry<T> nextCursor;
+//        for (int i = 1; i < maxL; i++) {
+//            cursor = head;
+//            nextCursor = cursor.next[i - 1];
+//
+//            //nextCursor != tail
+//            while (true) {
+//                //System.out.println(nextCursor);
+//                //if(nextCursor.next[0] != null)
+//                //{
+//                if (nextCursor.next.length > i) {
+//                    cursor.next[i] = nextCursor;
+//                    System.out.println(" from " + cursor.element + " to " + nextCursor.element);
+//
+//                    cursor = nextCursor;
+//                    nextCursor = cursor.next[i - 1];
+//
+//
+//                    if (nextCursor == tail) {
+//                        System.out.println("nc at tail");
+//                        cursor.next[i] = tail;
+//                        break;
+//                    }
+//
+//                } else {
+//                    nextCursor = nextCursor.next[i - 1];
+//                    if (nextCursor == tail) {
+//                        System.out.println(" from " + cursor.element + " to " + nextCursor.element);
+//                        cursor.next[i] = tail;
+//                        break;
+//                    }
+//                }
+//                //}
+//
+//
+//            }
+//            if (nextCursor == tail)
+//            {
+//                cursor.next[i] = tail;
+//            }
+//        }
+//
+//        System.out.println("Rebuild Done");
     }
 
     private void assignHeight(long left, long right, int maxL) {
@@ -446,34 +451,29 @@ public class SkipList<T extends Comparable<? super T>> {
         if (left == right) {
             return;
         }
-
         int rightHeight = 0;
         int leftHeight = 0;
-
-        Entry<T> entryRight = getLogEntry(right);
-
         if (left == 0 && right == size + 1) {
             maxHeight = maxL;
         } else {
+            Entry<T> entryRight = getLinear(right);
             if (entryRight != tail) {
                 rightHeight = entryRight.next.length;
             } else {
                 rightHeight = (int) (Math.log(size + 2) / Math.log(2));
             }
-            leftHeight = getLogEntry(left).next.length;
+            leftHeight = getLinear(left).next.length;
 
             maxHeight = Math.min(rightHeight, leftHeight) - 1;
         }
 
         //finding the middle element index
         long mid = left + (right - left) / 2;
-
         if (mid == left) {
             return;
         }
-
         //geting the element at mid index
-        Entry<T> temp = getLogEntry(mid);
+        Entry<T> temp = getLinear(mid);
         //System.out.println(temp.element);
 
         if (temp == tail || temp == null) {
