@@ -390,12 +390,8 @@ public class SkipList<T extends Comparable<? super T>> {
     public void rebuild() {
         //System.out.println(getLogEntry(4).element);
         ///can keep
-        int maxL = (int) (Math.log(size + 2) / Math.log(2));
+        int maxL = (int) Math.ceil(Math.log(size + 1) / Math.log(2));
         System.out.println(maxL);
-
-        for (int i = 0; i < 63; i++) {
-            System.out.println("a " + i);
-        }
 
         assignHeight(0, size + 1, maxL);
 
@@ -453,8 +449,10 @@ public class SkipList<T extends Comparable<? super T>> {
         }
         int rightHeight = 0;
         int leftHeight = 0;
+        long mid = 0;
         if (left == 0 && right == size + 1) {
             maxHeight = maxL;
+            mid = (int) Math.pow(2, maxHeight - 1);
         } else {
             Entry<T> entryRight = getLinear(right);
             if (entryRight != tail) {
@@ -465,10 +463,11 @@ public class SkipList<T extends Comparable<? super T>> {
             leftHeight = getLinear(left).next.length;
 
             maxHeight = Math.min(rightHeight, leftHeight) - 1;
+            mid = left + (right - left) / 2;
         }
 
         //finding the middle element index
-        long mid = left + (right - left) / 2;
+
         if (mid == left) {
             return;
         }

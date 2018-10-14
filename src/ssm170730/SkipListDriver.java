@@ -122,6 +122,11 @@ public class SkipListDriver {
                     result = (result + 1) % modValue;
                     break;
                 }
+                case "linear": { //getLinear
+                    int intOperand = sc.nextInt();
+                    System.out.println(skipList.getLinear(intOperand).element);
+                    break;
+                }
 
             }
         }
