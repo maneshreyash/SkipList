@@ -57,8 +57,10 @@ public class SkipList<T extends Comparable<? super T>> {
         for (int i = 0; i < PossibleLevels; i++) {
             //Initially making all the indices of last to point to head
             last[i] = head;
+            head.next[i] = tail;
         }
         //TODO why not update head.next to tail as well ?
+
         tail.prev = head;
     }
 
@@ -105,7 +107,12 @@ public class SkipList<T extends Comparable<? super T>> {
      * @return true if add is successful
      */
 
-    public boolean add(T x) {
+    public boolean add(T x) throws NullPointerException {
+
+        if (x == null) {
+            throw new NullPointerException();
+        }
+
         if (size == 0) {
             int level = maxLevel;
             Entry<T> ent = new Entry<T>(x, level);
@@ -156,16 +163,18 @@ public class SkipList<T extends Comparable<? super T>> {
             if (last[i].next[i] != null) {//Checks if it is the last element
                 ent.next[i] = last[i].next[i];
                 last[i].next[i] = ent;
-                ent.next[i].prev = ent;
-                ent.prev = last[i];
+                //ent.next[i].prev = ent;
+                //ent.prev = last[i];
             } else {
                 ent.next[i] = tail;
                 last[i].next[i] = ent;
                 //TODO Wrong condition, not working if I add 7 after 3 in a list of total 2 elements, sets prev of 7 to null
-                ent.prev = last[i];
-                tail.prev = ent;
+                //ent.prev = last[i];
+                //tail.prev = ent;
             }
         }
+        ent.next[0].prev = ent;
+        ent.prev = last[0];
         size++;
         updateSpan(level, ent);
         System.out.println(level + ": Added " + ent.element);
@@ -378,6 +387,166 @@ public class SkipList<T extends Comparable<? super T>> {
      * Reorganizes the elements of the list into a perfect skip list
      */
     public void rebuild() {
+        //System.out.println(getLogEntry(4).element);
+        ///can keep
+        int maxL = (int) (Math.log(size + 2) / Math.log(2));
+        System.out.println(maxL);
+
+        assignHeight(0, size + 1, maxL);
+
+        /*
+        Entry<T> cursor;
+        Entry<T> nextCursor;
+        for (int i = 1; i < maxL; i++) {
+            cursor = head;
+            nextCursor = cursor.next[i - 1];
+
+            while (nextCursor != tail) {
+
+                if (nextCursor.next.length > i) {
+                    cursor.next[i] = nextCursor;
+                    System.out.println(" from " + cursor.element + " to " + nextCursor.element);
+                    cursor = nextCursor;
+                    nextCursor = cursor.next[0];
+
+                    if (nextCursor == tail) {
+                        break;
+                    }
+                } else {
+                    nextCursor = nextCursor.next[i - 1];
+                }
+            }
+            if (nextCursor == tail)
+            {
+                cursor.next[i] = tail;
+            }
+        }
+
+*/
+        System.out.println("Rebuild Done");
+    }
+
+    private void assignHeight(long left, long right, int maxL) {
+        int maxHeight = 0;
+        if (left == right) {
+            return;
+        }
+
+        int rightHeight = 0;
+        int leftHeight = 0;
+
+        Entry<T> entryRight = getLogEntry(right);
+
+        if (left == 0 && right == size + 1) {
+            maxHeight = maxL;
+        } else {
+            if (entryRight != tail) {
+                rightHeight = entryRight.next.length;
+            } else {
+                rightHeight = (int) (Math.log(size + 2) / Math.log(2));
+            }
+            leftHeight = getLogEntry(left).next.length;
+
+            maxHeight = Math.min(rightHeight, leftHeight) - 1;
+        }
+
+        //finding the middle element index
+        long mid = left + (right - left) / 2;
+
+        if (mid == left) {
+            return;
+        }
+
+        //geting the element at mid index
+        System.out.println("mid " + mid);
+        Entry<T> temp = getLogEntry(mid);
+        //System.out.println(temp.element);
+
+        if (temp == tail || temp == null) {
+            System.out.println("empty");
+        } else {
+            //storing the next pointer
+            Entry<T> nextTemp = null;
+            if (temp.next[0] == tail || temp.next[0] == null) {
+                nextTemp = temp.next[0];
+                temp.next = new Entry[1];
+            } else {
+                nextTemp = temp.next[0];
+
+                if (maxHeight >= 1) {
+                    temp.next = new Entry[maxHeight];
+                } else {
+                    temp.next = new Entry[maxHeight + 1];
+                }
+            }
+            temp.next[0] = nextTemp;
+            nextTemp.prev = temp;
+
+        }
+        assignHeight(left, mid, maxHeight);
+        assignHeight(mid, right, maxHeight);
+
+    }
+
+    public Entry getLogEntry(long n) {
+        if (n > size + 1 || n < 0) {
+            return null;
+        }
+
+        if (n == size + 1) {
+            return tail;
+        }
+
+        Entry<T> cursor = head;
+        int i = maxLevel - 1;
+        int t = 0;
+        while (i >= 0) {
+
+            if (cursor != null && cursor != tail) {
+                if (cursor.span[i] >= n - t) {
+                    if (n == 0 && cursor == head) {
+                        return cursor;
+                    }
+                    i--;
+                } else if (cursor.span[i] < n - t) {
+
+                /*if (cursor == head) {
+                    if (cursor.span[i] == 0) {
+                        //t++;
+                        cursor = cursor.next[i];
+                    } else if (cursor.span[i] > 0) {
+                        t = t + cursor.span[i];
+                        cursor = cursor.next[i];
+                    }
+                } else {*/
+                    // when building is reduced i < cursor.next.length-1
+                    if (cursor.span[i] == 0 && i <= (cursor.next.length - 1)) {
+                        t++;
+                        cursor = cursor.next[i];
+                    } else if (cursor.span[i] > 0 && i <= (cursor.next.length - 1)) {
+                        t = t + cursor.span[i] + 1;
+                        cursor = cursor.next[i];
+                    } else {
+                        //i--;
+                        i = 0;
+                    }
+
+                    //}
+
+                }
+            }
+            //else
+
+            if (cursor == null) {
+                i = -1;
+            }
+
+        }
+
+        if (n == t && cursor != null) {
+            return cursor;
+        }
+        return tail;
 
     }
 
