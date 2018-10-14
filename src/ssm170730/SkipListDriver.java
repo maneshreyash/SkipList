@@ -66,7 +66,6 @@ public class SkipListDriver {
                     System.out.println(i + "\t Get " + returnValue);
                     if (returnValue != null) {
                         result = (result + returnValue) % modValue;
-                        //System.out.println(result);
                     }
                     break;
                 }
@@ -114,6 +113,25 @@ public class SkipListDriver {
                     }
                     break;
                 }
+                case "p": { //Print list
+                    skipList.printList(skipList);
+                break;
+                }
+                case "pa": { //Prints elements with last array inside it
+                    skipList.printListAmeya();
+                    break;
+                }
+                case "gL": { //Contains
+                    int intOperand = sc.nextInt();
+                    System.out.println(skipList.getLogEntry(intOperand).element);
+                    break;
+                }
+                case "reb": { //Contains
+                    skipList.rebuild();
+                    System.out.println("Done!!!");
+                    result = (result + 1) % modValue;
+                    break;
+                }
 
             }
         }
@@ -125,5 +143,3 @@ public class SkipListDriver {
         System.out.println(timer);
     }
 }
-
-//Test cases failed  (Expected/Actual) = 03  70918/66207,11 = 163/157 ,12 = 1013/1009, 13 = 4002/3952, 14 = 445138/510519
