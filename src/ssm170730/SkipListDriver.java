@@ -109,6 +109,18 @@ public class SkipListDriver {
                 }
                 case "pa": { //Prints elements with last array inside it
                     skipList.printListAmeya();
+                    break;
+                }
+                case "gL": { //Contains
+                    int intOperand = sc.nextInt();
+                    System.out.println(skipList.getLogEntry(intOperand).element);
+                    break;
+                }
+                case "reb": { //Contains
+                    skipList.rebuild();
+                    System.out.println("Done!!!");
+                    result = (result + 1) % modValue;
+                    break;
                 }
 
             }
