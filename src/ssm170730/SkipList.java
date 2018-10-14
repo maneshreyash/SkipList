@@ -394,27 +394,43 @@ public class SkipList<T extends Comparable<? super T>> {
 
         assignHeight(0, size + 1, maxL);
 
-        /*
+
         Entry<T> cursor;
         Entry<T> nextCursor;
         for (int i = 1; i < maxL; i++) {
             cursor = head;
             nextCursor = cursor.next[i - 1];
 
-            while (nextCursor != tail) {
-
+            //nextCursor != tail
+            while (true) {
+                //System.out.println(nextCursor);
+                //if(nextCursor.next[0] != null)
+                //{
                 if (nextCursor.next.length > i) {
                     cursor.next[i] = nextCursor;
                     System.out.println(" from " + cursor.element + " to " + nextCursor.element);
+
                     cursor = nextCursor;
-                    nextCursor = cursor.next[0];
+                    nextCursor = cursor.next[i - 1];
+
 
                     if (nextCursor == tail) {
+                        System.out.println("nc at tail");
+                        cursor.next[i] = tail;
                         break;
                     }
+
                 } else {
                     nextCursor = nextCursor.next[i - 1];
+                    if (nextCursor == tail) {
+                        System.out.println(" from " + cursor.element + " to " + nextCursor.element);
+                        cursor.next[i] = tail;
+                        break;
+                    }
                 }
+                //}
+
+
             }
             if (nextCursor == tail)
             {
@@ -422,7 +438,6 @@ public class SkipList<T extends Comparable<? super T>> {
             }
         }
 
-*/
         System.out.println("Rebuild Done");
     }
 
@@ -458,12 +473,11 @@ public class SkipList<T extends Comparable<? super T>> {
         }
 
         //geting the element at mid index
-        System.out.println("mid " + mid);
         Entry<T> temp = getLogEntry(mid);
         //System.out.println(temp.element);
 
         if (temp == tail || temp == null) {
-            System.out.println("empty");
+            //System.out.println("empty");
         } else {
             //storing the next pointer
             Entry<T> nextTemp = null;
@@ -510,15 +524,6 @@ public class SkipList<T extends Comparable<? super T>> {
                     i--;
                 } else if (cursor.span[i] < n - t) {
 
-                /*if (cursor == head) {
-                    if (cursor.span[i] == 0) {
-                        //t++;
-                        cursor = cursor.next[i];
-                    } else if (cursor.span[i] > 0) {
-                        t = t + cursor.span[i];
-                        cursor = cursor.next[i];
-                    }
-                } else {*/
                     // when building is reduced i < cursor.next.length-1
                     if (cursor.span[i] == 0 && i <= (cursor.next.length - 1)) {
                         t++;
@@ -530,8 +535,6 @@ public class SkipList<T extends Comparable<? super T>> {
                         //i--;
                         i = 0;
                     }
-
-                    //}
 
                 }
             }
