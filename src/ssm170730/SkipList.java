@@ -404,34 +404,26 @@ public class SkipList<T extends Comparable<? super T>> {
             //nextCursor != tail
             while (true) {
                 //System.out.println(nextCursor);
-                //if(nextCursor.next[0] != null)
+                //if (nextCursor.next != null)
                 //{
                 if (nextCursor.next.length > i) {
                     cursor.next[i] = nextCursor;
                     System.out.println(" from " + cursor.element + " to " + nextCursor.element);
-
                     cursor = nextCursor;
                     nextCursor = cursor.next[i - 1];
 
-
-                    if (nextCursor == tail) {
-                        System.out.println("nc at tail");
-                        cursor.next[i] = tail;
-                        break;
-                    }
-
                 } else {
                     nextCursor = nextCursor.next[i - 1];
+                }
+
                     if (nextCursor == tail) {
                         System.out.println(" from " + cursor.element + " to " + nextCursor.element);
                         cursor.next[i] = tail;
                         break;
                     }
-                }
-                //}
-
-
             }
+            //}
+
             if (nextCursor == tail)
             {
                 cursor.next[i] = tail;
