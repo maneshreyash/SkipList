@@ -2,7 +2,6 @@ package ssm170730;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.Random;
 
 /**
@@ -282,7 +281,7 @@ public class SkipList<T extends Comparable<? super T>> {
      *
      * @param n the index at which the element is to be retrieved from
      * @return the element present at n index
-     * @throws NoSuchElementException if n is not within the size of the input array
+     *
      */
     public T get(int n) {
         /*if (n < 0 || n > size - 1) {
@@ -304,10 +303,10 @@ public class SkipList<T extends Comparable<? super T>> {
      */
     public T getLinear(int n) {
         if (n < 0 || n > size - 1) {
-            throw new NoSuchElementException();
+            return null;
         }
         Entry<T> p = head;
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i <= n; i++) {
             p = p.next[0];
         }
         return p.element;
@@ -463,6 +462,9 @@ public class SkipList<T extends Comparable<? super T>> {
                 cursor = cursor.next[0];
             }
             Iterator<T> it = skipList.iterator();
+            it.next();
+            it.remove();
+            System.out.println("1 element removed");
             while (it.hasNext()) {
                 System.out.print(" " + it.next());
             }
