@@ -107,7 +107,6 @@ public class SkipListDriver {
                     if (skipList.contains(operand)) {
                         System.out.println(i + "\t Contains " + " : " + operand + " " + true);
                         result = (result + 1) % modValue;
-                        //System.out.println(result);
                     } else {
                         System.out.println(i + "\t Contains " + " : " + operand + " " + false);
                     }
@@ -124,7 +123,6 @@ public class SkipListDriver {
                 case "gL": { //getLogEntry/getLinear
                     int intOperand = sc.nextInt();
                     System.out.println(skipList.getLinearEntry(intOperand).element);
-                    //System.out.println(skipList.getLogEntry(intOperand).element);
                     break;
                 }
                 case "reb": { //Contains
