@@ -390,62 +390,71 @@ public class SkipList<T extends Comparable<? super T>> {
         //System.out.println(getLogEntry(4).element);
         ///can keep
         //int maxL = (int) (Math.log(size + 2) / Math.log(2));
+        if(size == 0)
+        {
+            return;
+        }
         int maxL = (int) Math.ceil(Math.log(size + 1) / Math.log(2));
+
+//        if(size == Math.pow(2, Math.floor((Math.log(size) / Math.log(2)))));
+//        {
+//            System.out.println("Check for 2^i");
+//            assignHeight(0, size, maxL-1);
+//        }
 
         assignHeight(0, size + 1, maxL);
 
-
+        System.out.println();
         Entry<T> cursor;
         Entry<T> nextCursor;
         int count = 0;
         for (int i = 1; i < maxL; i++) {
             cursor = head;
-            nextCursor = cursor.next[i - 1];
+            nextCursor = cursor.next[0];
 
             count = 0;
-            //nextCursor != tail
-            while (true) {
-                //System.out.println(nextCursor);
-                //if (nextCursor.next != null)
-                //{
+            if (cursor.next[0] == tail) {
+                cursor.next[i] = tail;
+            } else {
+                while (true) {
+                    //System.out.println(nextCursor);
+                    //if (nextCursor.next != null)
+                    //{
 
-                if (nextCursor.next.length > i) {
-                    cursor.next[i] = nextCursor;
-                    //System.out.println(" from " + cursor.element + " to " + nextCursor.element);
-                    //cursor.span[i] = cursor.span[i - 1] + (count * i);
-                    cursor.span[i] = cursor.span[i - 1] + nextCursor.span[i - 1] + 1;
+                    if (nextCursor.next.length > i) {
+                        cursor.next[i] = nextCursor;
+                        //System.out.println(" from " + cursor.element + " to " + nextCursor.element);
+                        //cursor.span[i] = cursor.span[i - 1] + (count * i);
+                        cursor.span[i] = count;//cursor.span[i - 1] + nextCursor.span[i - 1] + 1;
 
-                    cursor = nextCursor;
-                    nextCursor = cursor.next[i - 1];
-                    count = 0;
+                        cursor = nextCursor;
+                        nextCursor = cursor.next[0];
+                        count = 0;
 
-                } else {
-                    //count = count + nextCursor.span[i-1];
-                    nextCursor = nextCursor.next[i - 1];
-                    count++;
-                }
+                    } else {
+                        //count = count + nextCursor.span[i-1];
+                        nextCursor = nextCursor.next[0];
+                        count++;
+                    }
 
-                if (nextCursor == tail) {
-                    //System.out.println(" from " + cursor.element + " to " + nextCursor.element);
-                    cursor.next[i] = tail;
-                    //cursor.span[i] = cursor.span[i - 1] + (count * i);
-                    cursor.span[i] = cursor.span[i - 1] + head.span[i - 1] + 1;
-                    //System.out.println("hj");
-                    break;
+                    if (nextCursor == tail) {
+                        cursor.next[i] = tail;
+                        cursor.span[i] = count;
+                        break;
+                    }
                 }
             }
+        }
             //}
 
-/*
-            if (nextCursor == tail)
+    /*        if (nextCursor == tail)
             {
                 cursor.next[i] = tail;
                 //cursor.span[i] = cursor.span[i - 1] + (count * i);
                 cursor.span[i] = cursor.span[i - 1] + head.span[i-1] + 1;
                 System.out.println("kkk");
-            }
-*/
-        }
+            }*/
+
 
         System.out.println("Rebuild Done");
     }
@@ -542,14 +551,24 @@ public class SkipList<T extends Comparable<? super T>> {
         int rightHeight = 0;
         int leftHeight = 0;
         long mid = 0;
+        if(left == 0 && right == size)
+        {
+            maxHeight = maxL;
+            mid = (int) Math.pow(2, maxHeight - 1);
+        }
+
         if (left == 0 && right == size + 1) {
             maxHeight = maxL;
             mid = (int) Math.pow(2, maxHeight - 1);
         } else {
             Entry<T> entryRight = getLinearEntry(right);
-            if (entryRight != tail) {
+            if(entryRight.next[0] == tail){
+                rightHeight = maxL;
+            }
+            else if (entryRight != tail ) {
                 rightHeight = entryRight.next.length;
-            } else {
+            }
+            else {
                 rightHeight = (int) (Math.log(size + 2) / Math.log(2));
             }
             leftHeight = getLinearEntry(left).next.length;
@@ -559,7 +578,6 @@ public class SkipList<T extends Comparable<? super T>> {
         }
 
         //finding the middle element index
-
         if (mid == left) {
             return;
         }

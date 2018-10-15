@@ -86,6 +86,7 @@ public class SkipListDriver {
                 case "r": { //Remove
                     operand = sc.nextLong();
                     if (skipList.remove(operand) != null) {
+                        System.out.println("removed");
                         result = (result + 1) % modValue;
                     } else {
                         System.out.println("No element to remove");
@@ -113,7 +114,7 @@ public class SkipListDriver {
                 }
                 case "gL": { //Contains
                     int intOperand = sc.nextInt();
-                    System.out.println(skipList.getLogEntry(intOperand).element);
+                    System.out.println(skipList.getLog(intOperand));
                     break;
                 }
                 case "reb": { //Contains
