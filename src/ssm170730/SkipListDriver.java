@@ -3,6 +3,7 @@ package ssm170730;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Iterator;
 import java.util.Scanner;
 
 //Driver program for skip list implementation.
@@ -23,6 +24,7 @@ public class SkipListDriver {
         long result = 0;
         Long returnValue = null;
         SkipList<Long> skipList = new SkipList<>();
+        Iterator<Long> it = skipList.iterator();
         // Initialize the timer
         Timer timer = new Timer();
 
@@ -85,7 +87,6 @@ public class SkipListDriver {
                     System.out.println(i + "\tFloor =  " + returnValue);
                     if (returnValue != null) {
                         result = (result + returnValue) % modValue;
-                        //System.out.println(result);
                     }
                     break;
                 }
@@ -95,7 +96,6 @@ public class SkipListDriver {
                     if (skipList.remove(operand) != null) {
                         result = (result + 1) % modValue;
                         System.out.println(i + "\t Remove " + " : " + operand + " " + true);
-                        //System.out.println(result);
                     } else {
                         System.out.println(i + "\t Remove " + " : " + operand + " " + false);
                     }
@@ -130,6 +130,14 @@ public class SkipListDriver {
                     skipList.rebuild();
                     System.out.println("Done!!!");
                     result = (result + 1) % modValue;
+                    break;
+                }
+                case "ni": { //Contains
+                    it.next();
+                    break;
+                }
+                case "ri": { //Contains
+                    it.remove();
                     break;
                 }
 
