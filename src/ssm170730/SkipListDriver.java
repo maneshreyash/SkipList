@@ -111,14 +111,14 @@ public class SkipListDriver {
                     skipList.printListAmeya();
                     break;
                 }
-                case "gL": { //Contains
+                case "gL": { //getLogEntry/getLinear
                     int intOperand = sc.nextInt();
-                    System.out.println(skipList.getLogEntry(intOperand).element);
+                    System.out.println(skipList.getLinearEntry(intOperand).element);
+                    //System.out.println(skipList.getLogEntry(intOperand).element);
                     break;
                 }
                 case "reb": { //Contains
                     skipList.rebuild();
-                    System.out.println("Done!!!");
                     result = (result + 1) % modValue;
                     break;
                 }
