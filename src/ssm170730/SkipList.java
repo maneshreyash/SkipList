@@ -107,11 +107,8 @@ public class SkipList<T extends Comparable<? super T>> {
      * @return true if add is successful
      */
 
-    public boolean add(T x) throws NullPointerException {
-
-        if (x == null) {
-            throw new NullPointerException();
-        }
+    public boolean add(T x) {
+        
 
         if (size == 0) {
             int level = maxLevel;
