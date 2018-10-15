@@ -430,13 +430,7 @@ public class SkipList<T extends Comparable<? super T>> {
     }
 
 
-    /**
-     * Assigns level for the next[] for all the {@link Entry} using Divide & Conquer strategy
-     *
-     * @param left  leftmost index of the dataset
-     * @param right rightmost index of the dataset
-     * @param maxL  ideal maxLevel to be assigned
-     */
+
     int highestPowerof2(int n) {
         int res = 0;
         for (int i = n; i >= 1; i--) {
@@ -521,6 +515,14 @@ public class SkipList<T extends Comparable<? super T>> {
 
     }*/
 
+    /**
+     * Assigns level for the next[] for all the {@link Entry} using Divide & Conquer strategy
+     *
+     * @param left  leftmost index of the dataset
+     * @param right rightmost index of the dataset
+     * @param maxL  ideal maxLevel to be assigned
+     */
+
     private void assignHeight(long left, long right, int maxL) {
         int maxHeight = 0;
         if (left == right) {
@@ -583,60 +585,16 @@ public class SkipList<T extends Comparable<? super T>> {
 
     }
 
-
-
-    public Entry getLogEntry(long n) {
-        if (n > size + 1 || n < 0) {
-            return null;
-        }
-
-        if (n == size + 1) {
-            return tail;
-        }
-
-        Entry<T> cursor = head;
-        int i = maxLevel - 1;
-        int t = 0;
-        while (i >= 0) {
-
-            if (cursor != null && cursor != tail) {
-                if (cursor.span[i] >= n - t) {
-                    if (n == 0 && cursor == head) {
-                        return cursor;
-                    }
-                    i--;
-                } else if (cursor.span[i] < n - t) {
-
-                    // when building is reduced i < cursor.next.length-1
-                    if (cursor.span[i] == 0 && i <= (cursor.next.length - 1)) {
-                        t++;
-                        cursor = cursor.next[i];
-                    } else if (cursor.span[i] > 0 && i <= (cursor.next.length - 1)) {
-                        t = t + cursor.span[i] + 1;
-                        cursor = cursor.next[i];
-                    } else {
-                        //i--;
-                        i = 0;
-                    }
-
-                }
-            }
-            //else
-            if (cursor == null) {
-                i = -1;
-            }
-        }
-
-        if (n == t && cursor != null) {
-            return cursor;
-        }
-        return tail;
-
-    }
+    /**
+     * Provides you with the entry at index n
+     *
+     * @param n value of index
+     * @return entry at index n, else null
+     */
 
     public Entry<T> getLinearEntry(long n) {
         if (n < 0 || n > size + 1) {
-            throw new NoSuchElementException();
+            return null;
         }
         Entry<T> p = head;
 
