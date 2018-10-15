@@ -117,24 +117,19 @@ public class SkipListDriver {
                 break;
                 }
                 case "pa": { //Prints elements with last array inside it
-                    skipList.printListAmeya();
+                    skipList.printListArray();
                     break;
                 }
-                case "gL": { //getLogEntry/getLinear
-                    int intOperand = sc.nextInt();
-                    System.out.println(skipList.getLinearEntry(intOperand).element);
-                    break;
-                }
-                case "reb": { //Contains
+                case "reb": { //Rebuild
                     skipList.rebuild();
                     result = (result + 1) % modValue;
                     break;
                 }
-                case "ni": { //Contains
+                case "ni": { //Next from iterator
                     it.next();
                     break;
                 }
-                case "ri": { //Contains
+                case "ri": { //RemoveIterator from iterator
                     it.remove();
                     break;
                 }
