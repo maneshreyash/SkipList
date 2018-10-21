@@ -125,7 +125,7 @@ public class SkipList<T extends Comparable<? super T>> {
             return false;
         }
         if (addHelper(x)) {
-            Entry spanner = head;
+            /*Entry spanner = head;
             if (spanner == head) {
                 updateSpan(maxLevel, spanner);
                 spanner = spanner.next[0];
@@ -133,7 +133,8 @@ public class SkipList<T extends Comparable<? super T>> {
             while (x.compareTo((T) spanner.element) > 0) {
                 updateSpan(spanner.next.length, spanner);
                 spanner = spanner.next[0];
-            }
+            }*/
+            updateSpanForPreviousElements();
         }
         return true;
     }
@@ -190,6 +191,27 @@ public class SkipList<T extends Comparable<? super T>> {
                 }
             }
             ent.span[i] = count;
+        }
+    }
+
+
+    private void updateSpanForPreviousElements() {
+        last[0].span[0] = 0;
+        int i = 1;
+        while (i <= maxLevel - 1) {
+            if (last[i] == last[i - 1]) {
+                last[i].span[i] = last[i - 1].span[i - 1];
+                i++;
+            } else {
+                int count = 0;
+                Entry cursor = last[i - 1];
+                while (cursor != last[i]) {
+                    cursor = cursor.prev;
+                    count++;
+                }
+                last[i].span[i] = last[i].span[i - 1] + count;
+            }
+            i++;
         }
     }
 
@@ -523,7 +545,8 @@ public class SkipList<T extends Comparable<? super T>> {
         for (int i = 0; i < ent.next.length; i++) {
             last[i].next[i] = ent.next[i];
         }
-        updateSpanAfterRemove(ent);
+        //updateSpanAfterRemove(ent);
+        updateSpanForPreviousElements();
         size--;
         return ent.element;
     }
