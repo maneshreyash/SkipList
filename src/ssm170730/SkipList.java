@@ -196,21 +196,9 @@ public class SkipList<T extends Comparable<? super T>> {
 
 
     private void updateSpanForPreviousElements() {
-        last[0].span[0] = 0;
-        int i = 1;
-        while (i <= maxLevel - 1) {
-            if (last[i] == last[i - 1]) {
-                last[i].span[i] = last[i - 1].span[i - 1];
-                i++;
-            } else {
-                int count = 0;
-                Entry cursor = last[i - 1];
-                while (cursor != last[i]) {
-                    cursor = cursor.prev;
-                    count++;
-                }
-                last[i].span[i] = last[i].span[i - 1] + count;
-            }
+        int i = 0;
+        while(i < maxLevel){
+            updateSpan(last[i].span.length, last[i]);
             i++;
         }
     }
